@@ -151,7 +151,7 @@ end
 
 local function OnAddOnLoaded(event, addonName)
     if addonName == ADDON_NAME then
-        EquipExport:Initialize()
+        Initialize()
     end
 end
 
