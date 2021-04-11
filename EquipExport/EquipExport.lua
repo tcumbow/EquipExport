@@ -142,6 +142,22 @@ local function ExportWholeBagAsync(bagId)
     Task:Call(ExportWholeBag(bagId))
 end
 
+local function OnEventCloseBank()
+    if IsOwnerOfCurrentHouse() then
+        ExportWholeBag(BAG_HOUSE_BANK_ONE)
+        ExportWholeBag(BAG_HOUSE_BANK_TWO)
+        ExportWholeBag(BAG_HOUSE_BANK_THREE)
+        ExportWholeBag(BAG_HOUSE_BANK_FOUR)
+        ExportWholeBag(BAG_HOUSE_BANK_FIVE)
+        ExportWholeBag(BAG_HOUSE_BANK_SIX)
+        ExportWholeBag(BAG_HOUSE_BANK_SEVEN)
+        ExportWholeBag(BAG_HOUSE_BANK_EIGHT)
+        ExportWholeBag(BAG_HOUSE_BANK_NINE)
+        ExportWholeBag(BAG_HOUSE_BANK_TEN)
+        EVENT_MANAGER:UnregisterForEvent(ADDON_NAME, EVENT_CLOSE_BANK, OnEventCloseBank)
+    end
+end
+
 local function Initialize()
     CharName = GetUnitName("player")
     AccountName = GetDisplayName()
@@ -157,9 +173,11 @@ local function Initialize()
         zo_callLater(function() ExportWholeBag(BAG_SUBSCRIBER_BANK) end,26*1000)
     end
 
+    if not Sv.BagInitialized[BAG_HOUSE_BANK_ONE] then
+        EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_CLOSE_BANK, OnEventCloseBank)
+    end
     --EVENT_MANAGER:RegisterForUpdate(ADDON_NAME, 5*60*1000, function() ExportAll() end)
     -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_PLAYER_ACTIVATED, function() ExportAll() end)
-    -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_CLOSE_BANK, function() ExportAll() end)
     -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_CLOSE_STORE, function() ExportAll() end)
     -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_LOGOUT_DEFERRED, function() ExportAll() end)
     -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_ACTIVITY_FINDER_ACTIVITY_COMPLETE, function() ExportAllDelay() end)
