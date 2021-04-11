@@ -50,7 +50,7 @@ local function loopThruInventory(bagId)
         else
             tmp = "EquipExport,"..loc..",slot"..slotIndex
         end
-        
+
         Sv[tmp..",LinkName"] = GetItemLinkName(GetItemLink(bagId,slotIndex))
         Sv[tmp..",TypeId"] = GetItemType(bagId,slotIndex)
         Sv[tmp..",ArmorTypeId"] = GetItemArmorType(bagId,slotIndex)
@@ -67,7 +67,7 @@ local function loopThruInventory(bagId)
         Sv[tmp..",EnchantHeader"] = enchantHeader
         Sv[tmp..",EnchantDescription"] = enchantDescription
         Sv[tmp..",EnchantQualityId"] = GetEnchantQuality(GetItemLink(bagId,slotIndex))
-        
+
     end
 end
 
