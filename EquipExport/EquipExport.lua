@@ -1,9 +1,10 @@
 local ADDON_NAME = "EquipExport"
-local sV = {}
+local Sv = {}
 
 -- Begin local copies
 local LR = LibResearch
-local task = LibAsync:Create("AsyncTask")
+local Task = LibAsync:Create("AsyncTask")
+local Print = d
 
 local subIdToQuality = { }
 
@@ -50,22 +51,22 @@ local function loopThruInventory(bagId)
             tmp = "EquipExport,"..loc..",slot"..slotIndex
         end
         
-        EquipExport.sV[tmp..",LinkName"] = GetItemLinkName(GetItemLink(bagId,slotIndex))
-        EquipExport.sV[tmp..",TypeId"] = GetItemType(bagId,slotIndex)
-        EquipExport.sV[tmp..",ArmorTypeId"] = GetItemArmorType(bagId,slotIndex)
-        EquipExport.sV[tmp..",WeaponTypeId"] = GetItemWeaponType(bagId,slotIndex)
-        EquipExport.sV[tmp..",Trait"] = GetString("SI_ITEMTRAITTYPE",GetItemTrait(bagId,slotIndex))
-        EquipExport.sV[tmp..",QualityId"] = GetItemQuality(bagId,slotIndex)
+        EquipExport.Sv[tmp..",LinkName"] = GetItemLinkName(GetItemLink(bagId,slotIndex))
+        EquipExport.Sv[tmp..",TypeId"] = GetItemType(bagId,slotIndex)
+        EquipExport.Sv[tmp..",ArmorTypeId"] = GetItemArmorType(bagId,slotIndex)
+        EquipExport.Sv[tmp..",WeaponTypeId"] = GetItemWeaponType(bagId,slotIndex)
+        EquipExport.Sv[tmp..",Trait"] = GetString("SI_ITEMTRAITTYPE",GetItemTrait(bagId,slotIndex))
+        EquipExport.Sv[tmp..",QualityId"] = GetItemQuality(bagId,slotIndex)
         local isSet,setName,setId = LibSets.IsSetByItemLink(GetItemLink(bagId,slotIndex))
-        EquipExport.sV[tmp..",SetId"] = setId
-        EquipExport.sV[tmp..",EquipTypeId"] = GetItemLinkEquipType(GetItemLink(bagId,slotIndex))
-        EquipExport.sV[tmp..",Account"] = GetDisplayName()
-        EquipExport.sV[tmp..",EnchantIdApplied"] = GetItemLinkAppliedEnchantId(GetItemLink(bagId,slotIndex))
-        EquipExport.sV[tmp..",EnchantIdDefault"] = GetItemLinkDefaultEnchantId(GetItemLink(bagId,slotIndex))
+        EquipExport.Sv[tmp..",SetId"] = setId
+        EquipExport.Sv[tmp..",EquipTypeId"] = GetItemLinkEquipType(GetItemLink(bagId,slotIndex))
+        EquipExport.Sv[tmp..",Account"] = GetDisplayName()
+        EquipExport.Sv[tmp..",EnchantIdApplied"] = GetItemLinkAppliedEnchantId(GetItemLink(bagId,slotIndex))
+        EquipExport.Sv[tmp..",EnchantIdDefault"] = GetItemLinkDefaultEnchantId(GetItemLink(bagId,slotIndex))
         local hasCharges,enchantHeader,enchantDescription = GetItemLinkEnchantInfo(GetItemLink(bagId,slotIndex))
-        EquipExport.sV[tmp..",EnchantHeader"] = enchantHeader
-        EquipExport.sV[tmp..",EnchantDescription"] = enchantDescription
-        EquipExport.sV[tmp..",EnchantQualityId"] = GetEnchantQuality(GetItemLink(bagId,slotIndex))
+        EquipExport.Sv[tmp..",EnchantHeader"] = enchantHeader
+        EquipExport.Sv[tmp..",EnchantDescription"] = enchantDescription
+        EquipExport.Sv[tmp..",EnchantQualityId"] = GetEnchantQuality(GetItemLink(bagId,slotIndex))
         
     end
 end
@@ -90,7 +91,7 @@ local function export()
 end
 
 function EquipExport:ExportAll()
-    task:Call(export())
+    Task:Call(export())
 end
 
 function EquipExport:ExportAllDelay()
@@ -98,7 +99,7 @@ function EquipExport:ExportAllDelay()
 end
 
 function EquipExport:Initialize()
-    sV = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 9, nil, {})
+    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 9, nil, {})
     --zo_callLater(function() self:ExportAll() end,20*1000)
     --EVENT_MANAGER:RegisterForUpdate(self.name, 5*60*1000, function() self:ExportAll() end)
     EVENT_MANAGER:RegisterForEvent(self.name, EVENT_PLAYER_ACTIVATED, function() self:ExportAll() end)
