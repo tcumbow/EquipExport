@@ -2,7 +2,7 @@ local ADDON_NAME = "EquipExport"
 local Sv = {}
 local CharName
 local AccountName
-local subIdToQuality = { }
+local subIdToQuality = { } -- goes with GetEnchantQuality function
 
 -- Begin local copies
 local LR = LibResearch
