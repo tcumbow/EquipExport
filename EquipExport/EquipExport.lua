@@ -138,6 +138,10 @@ local function ExportWholeBag(bagId)
     Sv.BagInitialized["bagId"] = true
 end
 
+local function ExportWholeBagAsync(bagId)
+    Task:Call(ExportWholeBag(bagId))
+end
+
 local function Initialize()
     CharName = GetUnitName("player")
     AccountName = GetDisplayName()
