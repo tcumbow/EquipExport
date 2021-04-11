@@ -33,33 +33,6 @@ local function GetEnchantQuality(itemLink)
 	return 0
 end
 
-local function export()
-    ExportWholeBag(BAG_WORN)
-    ExportWholeBag(BAG_BACKPACK)
-    ExportWholeBag(BAG_BANK)
-    ExportWholeBag(BAG_SUBSCRIBER_BANK)
-    if IsOwnerOfCurrentHouse() then
-        ExportWholeBag(BAG_HOUSE_BANK_ONE)
-        ExportWholeBag(BAG_HOUSE_BANK_TWO)
-        ExportWholeBag(BAG_HOUSE_BANK_THREE)
-        ExportWholeBag(BAG_HOUSE_BANK_FOUR)
-        ExportWholeBag(BAG_HOUSE_BANK_FIVE)
-        ExportWholeBag(BAG_HOUSE_BANK_SIX)
-        ExportWholeBag(BAG_HOUSE_BANK_SEVEN)
-        ExportWholeBag(BAG_HOUSE_BANK_EIGHT)
-        ExportWholeBag(BAG_HOUSE_BANK_NINE)
-        ExportWholeBag(BAG_HOUSE_BANK_TEN)
-    end
-end
-
-local function ExportAll()
-    Task:Call(export())
-end
-
-local function ExportAllDelay()
-    zo_callLater(function() ExportAll() end,1*1000)
-end
-
 local function BuildLocString(bagId,slotId) --pure function except CharName and AccountName
     local tmp=""
     local loc = ""
