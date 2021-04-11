@@ -154,6 +154,7 @@ end
 
 local function OnAddOnLoaded(event, addonName)
     if addonName == ADDON_NAME then
+        EVENT_MANAGER:UnregisterForEvent(ADDON_NAME, event)
         Initialize()
     end
 end
