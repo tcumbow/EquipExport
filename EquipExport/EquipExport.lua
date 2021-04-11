@@ -135,6 +135,7 @@ local function ExportWholeBag(bagId)
     for slotIndex = 0, bagSize - 1 do
         ExportSingleItem(bagId,slotIndex)
     end
+    Sv.BagInitialized["bagId"] = true
 end
 
 local function Initialize()
@@ -142,7 +143,9 @@ local function Initialize()
     AccountName = GetDisplayName()
     Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 19, nil, {})
     SetHeaderRow()
+    Sv.BagInitialized = Sv.BagInitialized or {}
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
+
     --zo_callLater(function() ExportAll() end,20*1000)
     --EVENT_MANAGER:RegisterForUpdate(ADDON_NAME, 5*60*1000, function() ExportAll() end)
     -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_PLAYER_ACTIVATED, function() ExportAll() end)
