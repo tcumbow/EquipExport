@@ -109,6 +109,7 @@ local function ExportWholeBag(bagId)
         ExportSingleItem(bagId,slotIndex)
     end
     Sv.BagInitialized[bagId] = true
+    Print("EquipExport ran on BagId: "..tostring(bagId))
 end
 
 local function ExportWholeBagAsync(bagId)
@@ -129,6 +130,7 @@ local function OnEventCloseBank()
         ExportWholeBag(BAG_HOUSE_BANK_TEN)
         EVENT_MANAGER:UnregisterForEvent(ADDON_NAME, EVENT_CLOSE_BANK, OnEventCloseBank)
     end
+    Print("EquipExport ran on storage chests")
 end
 
 local function Initialize()
