@@ -101,39 +101,69 @@ local function ExportAllDelay()
     zo_callLater(function() ExportAll() end,1*1000)
 end
 
-local function ExportSingleItem(bagId,slotId)
-    local tmp = ""
+local function BuildLocString(bagId,slotId) --pure function except CharName and AccountName
+    local tmp=""
     local loc = ""
     if bagId==BAG_WORN then loc=CharName.." - Equipped"
     elseif bagId==BAG_BACKPACK then loc=CharName.." - Bag"
     elseif bagId==BAG_BANK then loc=AccountName.." - Bank"
     elseif bagId==BAG_SUBSCRIBER_BANK then loc=AccountName.." - Bank"
+    elseif bagId==5 then loc=AccountName.." - Craft Bag"
     elseif 7<=bagId and bagId<=16 then loc=AccountName.." - Chest "..tostring(bagId-6)
     else loc="Uncategorized"..bagId
     end
 
     if bagId==BAG_SUBSCRIBER_BANK then
-        tmp = "EquipExport,"..loc..",slot+"..slotId
+        tmp = "LegitRow*"..loc..",slot+"..slotId
     else
-        tmp = "EquipExport,"..loc..",slot"..slotId
+        tmp = "LegitRow*"..loc..",slot"..slotId
     end
 
-    Sv[tmp..",LinkName"] = GetItemLinkName(GetItemLink(bagId,slotId))
-    Sv[tmp..",TypeId"] = GetItemType(bagId,slotId)
-    Sv[tmp..",ArmorTypeId"] = GetItemArmorType(bagId,slotId)
-    Sv[tmp..",WeaponTypeId"] = GetItemWeaponType(bagId,slotId)
-    Sv[tmp..",Trait"] = GetString("SI_ITEMTRAITTYPE",GetItemTrait(bagId,slotId))
-    Sv[tmp..",QualityId"] = GetItemQuality(bagId,slotId)
+    return tmp
+end
+
+local function ExportSingleItem(bagId,slotId)
+    local dataString = ""
+    local key = BuildLocString(bagId,slotId)
+    local separator = ","
+
+    dataString = "||"
+    dataString = dataString .. GetItemLinkName(GetItemLink(bagId,slotId)) --LinkName
+    dataString = dataString .. separator
+    dataString = dataString .. GetItemType(bagId,slotId) --TypeId
+    dataString = dataString .. separator
+    dataString = dataString .. GetItemArmorType(bagId,slotId) --ArmorTypeId
+    dataString = dataString .. separator
+    dataString = dataString .. GetItemWeaponType(bagId,slotId) --WeaponTypeId
+    dataString = dataString .. separator
+    dataString = dataString .. GetString("SI_ITEMTRAITTYPE",GetItemTrait(bagId,slotId)) --Trait
+    dataString = dataString .. separator
+    dataString = dataString .. GetItemQuality(bagId,slotId) --QualityId
+    dataString = dataString .. separator
     local isSet,setName,setId = LibSets.IsSetByItemLink(GetItemLink(bagId,slotId))
-    Sv[tmp..",SetId"] = setId
-    Sv[tmp..",EquipTypeId"] = GetItemLinkEquipType(GetItemLink(bagId,slotId))
-    Sv[tmp..",Account"] = AccountName
-    Sv[tmp..",EnchantIdApplied"] = GetItemLinkAppliedEnchantId(GetItemLink(bagId,slotId))
-    Sv[tmp..",EnchantIdDefault"] = GetItemLinkDefaultEnchantId(GetItemLink(bagId,slotId))
+    dataString = dataString .. setId --SetId
+    dataString = dataString .. separator
+    dataString = dataString .. GetItemLinkEquipType(GetItemLink(bagId,slotId)) --EquipTypeId
+    dataString = dataString .. separator
+    dataString = dataString .. AccountName --Account
+    dataString = dataString .. separator
+    dataString = dataString .. GetItemLinkAppliedEnchantId(GetItemLink(bagId,slotId)) --EnchantIdApplied
+    dataString = dataString .. separator
+    dataString = dataString .. GetItemLinkDefaultEnchantId(GetItemLink(bagId,slotId)) --EnchantIdDefault
+    dataString = dataString .. separator
     local hasCharges,enchantHeader,enchantDescription = GetItemLinkEnchantInfo(GetItemLink(bagId,slotId))
-    Sv[tmp..",EnchantHeader"] = enchantHeader
-    Sv[tmp..",EnchantDescription"] = enchantDescription
-    Sv[tmp..",EnchantQualityId"] = GetEnchantQuality(GetItemLink(bagId,slotId))
+    dataString = dataString .. enchantHeader --EnchantHeader
+    dataString = dataString .. separator
+    dataString = dataString .. enchantDescription --EnchantDescription
+    dataString = dataString .. separator
+    dataString = dataString .. GetEnchantQuality(GetItemLink(bagId,slotId)) --EnchantQualityId
+    dataString = dataString .. "||"
+
+    Sv[key] = dataString
+end
+
+local function SetHeaderRow()
+    Sv["LegitRow*AAAAA"] = "||LinkName,TypeId,ArmorTypeId,WeaponTypeId,Trait,QualityId,SetId,EquipTypeId,Account,EnchantIdApplied,EnchantIdDefault,EnchantHeader,EnchantDescription,EnchantQualityId||"
 end
 
 local function OnInventorySingleSlotUpdate(_, bagId, slotId, _)
@@ -143,7 +173,8 @@ end
 local function Initialize()
     CharName = GetUnitName("player")
     AccountName = GetDisplayName()
-    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 10, nil, {})
+    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 13, nil, {})
+    SetHeaderRow()
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
     --zo_callLater(function() ExportAll() end,20*1000)
     --EVENT_MANAGER:RegisterForUpdate(ADDON_NAME, 5*60*1000, function() ExportAll() end)
