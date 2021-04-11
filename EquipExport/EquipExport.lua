@@ -51,22 +51,22 @@ local function loopThruInventory(bagId)
             tmp = "EquipExport,"..loc..",slot"..slotIndex
         end
         
-        EquipExport.Sv[tmp..",LinkName"] = GetItemLinkName(GetItemLink(bagId,slotIndex))
-        EquipExport.Sv[tmp..",TypeId"] = GetItemType(bagId,slotIndex)
-        EquipExport.Sv[tmp..",ArmorTypeId"] = GetItemArmorType(bagId,slotIndex)
-        EquipExport.Sv[tmp..",WeaponTypeId"] = GetItemWeaponType(bagId,slotIndex)
-        EquipExport.Sv[tmp..",Trait"] = GetString("SI_ITEMTRAITTYPE",GetItemTrait(bagId,slotIndex))
-        EquipExport.Sv[tmp..",QualityId"] = GetItemQuality(bagId,slotIndex)
+        Sv[tmp..",LinkName"] = GetItemLinkName(GetItemLink(bagId,slotIndex))
+        Sv[tmp..",TypeId"] = GetItemType(bagId,slotIndex)
+        Sv[tmp..",ArmorTypeId"] = GetItemArmorType(bagId,slotIndex)
+        Sv[tmp..",WeaponTypeId"] = GetItemWeaponType(bagId,slotIndex)
+        Sv[tmp..",Trait"] = GetString("SI_ITEMTRAITTYPE",GetItemTrait(bagId,slotIndex))
+        Sv[tmp..",QualityId"] = GetItemQuality(bagId,slotIndex)
         local isSet,setName,setId = LibSets.IsSetByItemLink(GetItemLink(bagId,slotIndex))
-        EquipExport.Sv[tmp..",SetId"] = setId
-        EquipExport.Sv[tmp..",EquipTypeId"] = GetItemLinkEquipType(GetItemLink(bagId,slotIndex))
-        EquipExport.Sv[tmp..",Account"] = GetDisplayName()
-        EquipExport.Sv[tmp..",EnchantIdApplied"] = GetItemLinkAppliedEnchantId(GetItemLink(bagId,slotIndex))
-        EquipExport.Sv[tmp..",EnchantIdDefault"] = GetItemLinkDefaultEnchantId(GetItemLink(bagId,slotIndex))
+        Sv[tmp..",SetId"] = setId
+        Sv[tmp..",EquipTypeId"] = GetItemLinkEquipType(GetItemLink(bagId,slotIndex))
+        Sv[tmp..",Account"] = GetDisplayName()
+        Sv[tmp..",EnchantIdApplied"] = GetItemLinkAppliedEnchantId(GetItemLink(bagId,slotIndex))
+        Sv[tmp..",EnchantIdDefault"] = GetItemLinkDefaultEnchantId(GetItemLink(bagId,slotIndex))
         local hasCharges,enchantHeader,enchantDescription = GetItemLinkEnchantInfo(GetItemLink(bagId,slotIndex))
-        EquipExport.Sv[tmp..",EnchantHeader"] = enchantHeader
-        EquipExport.Sv[tmp..",EnchantDescription"] = enchantDescription
-        EquipExport.Sv[tmp..",EnchantQualityId"] = GetEnchantQuality(GetItemLink(bagId,slotIndex))
+        Sv[tmp..",EnchantHeader"] = enchantHeader
+        Sv[tmp..",EnchantDescription"] = enchantDescription
+        Sv[tmp..",EnchantQualityId"] = GetEnchantQuality(GetItemLink(bagId,slotIndex))
         
     end
 end
@@ -90,29 +90,29 @@ local function export()
     end
 end
 
-function EquipExport:ExportAll()
+local function ExportAll()
     Task:Call(export())
 end
 
-function EquipExport:ExportAllDelay()
-    zo_callLater(function() self:ExportAll() end,1*1000)
+local function ExportAllDelay()
+    zo_callLater(function() ExportAll() end,1*1000)
 end
 
-function EquipExport:Initialize()
+local function Initialize()
     Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 9, nil, {})
-    --zo_callLater(function() self:ExportAll() end,20*1000)
-    --EVENT_MANAGER:RegisterForUpdate(self.name, 5*60*1000, function() self:ExportAll() end)
-    EVENT_MANAGER:RegisterForEvent(self.name, EVENT_PLAYER_ACTIVATED, function() self:ExportAll() end)
-    EVENT_MANAGER:RegisterForEvent(self.name, EVENT_CLOSE_BANK, function() self:ExportAll() end)
-    EVENT_MANAGER:RegisterForEvent(self.name, EVENT_CLOSE_STORE, function() self:ExportAll() end)
-    EVENT_MANAGER:RegisterForEvent(self.name, EVENT_LOGOUT_DEFERRED, function() self:ExportAll() end)
-    EVENT_MANAGER:RegisterForEvent(self.name, EVENT_ACTIVITY_FINDER_ACTIVITY_COMPLETE, function() self:ExportAllDelay() end)
+    --zo_callLater(function() ExportAll() end,20*1000)
+    --EVENT_MANAGER:RegisterForUpdate(ADDON_NAME, 5*60*1000, function() ExportAll() end)
+    EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_PLAYER_ACTIVATED, function() ExportAll() end)
+    EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_CLOSE_BANK, function() ExportAll() end)
+    EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_CLOSE_STORE, function() ExportAll() end)
+    EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_LOGOUT_DEFERRED, function() ExportAll() end)
+    EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_ACTIVITY_FINDER_ACTIVITY_COMPLETE, function() ExportAllDelay() end)
 end
 
-function EquipExport.OnAddOnLoaded(event, addonName)
-    if addonName == EquipExport.name then
+local function OnAddOnLoaded(event, addonName)
+    if addonName == ADDON_NAME then
         EquipExport:Initialize()
     end
 end
 
-EVENT_MANAGER:RegisterForEvent(EquipExport.name, EVENT_ADD_ON_LOADED, EquipExport.OnAddOnLoaded)
+EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_ADD_ON_LOADED, OnAddOnLoaded)
