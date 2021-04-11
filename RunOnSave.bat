@@ -1,0 +1,1 @@
+robocopy .\EquipExport A:\EquipExport

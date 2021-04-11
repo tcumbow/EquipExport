@@ -58,5 +58,12 @@
 		"ITEMTRAITTYPE",
 		"evented",
 		"readys"
-	]
+	],
+	"emeraldwalk.runonsave": {
+		"commands": [
+			{
+				"cmd": "RunOnSave.bat"
+			}
+		]
+	}
 }
