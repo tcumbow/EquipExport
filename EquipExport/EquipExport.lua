@@ -149,11 +149,7 @@ local function Initialize()
     if not Sv.BagInitialized[BAG_HOUSE_BANK_ONE] then
         EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_CLOSE_BANK, OnEventCloseBank)
     end
-    --EVENT_MANAGER:RegisterForUpdate(ADDON_NAME, 5*60*1000, function() ExportAll() end)
-    -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_PLAYER_ACTIVATED, function() ExportAll() end)
-    -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_CLOSE_STORE, function() ExportAll() end)
-    -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_LOGOUT_DEFERRED, function() ExportAll() end)
-    -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_ACTIVITY_FINDER_ACTIVITY_COMPLETE, function() ExportAllDelay() end)
+
 end
 
 local function OnAddOnLoaded(event, addonName)
