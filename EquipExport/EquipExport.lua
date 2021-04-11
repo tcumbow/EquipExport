@@ -150,7 +150,13 @@ local function Initialize()
     Sv.BagInitialized = Sv.BagInitialized or {}
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
 
-    --zo_callLater(function() ExportAll() end,20*1000)
+    if not Sv.BagInitialized[BAG_WORN] then
+        zo_callLater(function() ExportWholeBag(BAG_WORN) end,20*1000)
+        zo_callLater(function() ExportWholeBag(BAG_BACKPACK) end,22*1000)
+        zo_callLater(function() ExportWholeBag(BAG_BANK) end,24*1000)
+        zo_callLater(function() ExportWholeBag(BAG_SUBSCRIBER_BANK) end,26*1000)
+    end
+
     --EVENT_MANAGER:RegisterForUpdate(ADDON_NAME, 5*60*1000, function() ExportAll() end)
     -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_PLAYER_ACTIVATED, function() ExportAll() end)
     -- EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_CLOSE_BANK, function() ExportAll() end)
