@@ -109,18 +109,10 @@ function EquipExport:Initialize()
     EVENT_MANAGER:RegisterForEvent(self.name, EVENT_ACTIVITY_FINDER_ACTIVITY_COMPLETE, function() self:ExportAllDelay() end)
 end
 
-
-
-
-
--- Then we create an event handler function which will be called when the "addon loaded" event
--- occurs. We'll use this to initialize our addon after all of its resources are fully loaded.
 function EquipExport.OnAddOnLoaded(event, addonName)
-    -- The event fires each time *any* addon loads - but we only care about when our own addon loads.
     if addonName == EquipExport.name then
         EquipExport:Initialize()
     end
 end
 
--- Register our event handler function to be called when the proper event occurs.
 EVENT_MANAGER:RegisterForEvent(EquipExport.name, EVENT_ADD_ON_LOADED, EquipExport.OnAddOnLoaded)
