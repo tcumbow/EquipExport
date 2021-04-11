@@ -127,7 +127,6 @@ local function ExportSingleItem(bagId,slotId)
     local key = BuildLocString(bagId,slotId)
     local separator = ","
 
-    dataString = "||"
     dataString = dataString .. GetItemLinkName(GetItemLink(bagId,slotId)) --LinkName
     dataString = dataString .. separator
     dataString = dataString .. GetItemType(bagId,slotId) --TypeId
@@ -157,13 +156,15 @@ local function ExportSingleItem(bagId,slotId)
     dataString = dataString .. enchantDescription --EnchantDescription
     dataString = dataString .. separator
     dataString = dataString .. GetEnchantQuality(GetItemLink(bagId,slotId)) --EnchantQualityId
-    dataString = dataString .. "||"
+    dataString = dataString .. separator
+    local itemCount,_ = GetSlotStackSize(bagId,slotId)
+    dataString = dataString .. itemCount --StackCount
 
     Sv[key] = dataString
 end
 
 local function SetHeaderRow()
-    Sv["LegitRow*AAAAA"] = "||LinkName,TypeId,ArmorTypeId,WeaponTypeId,Trait,QualityId,SetId,EquipTypeId,Account,EnchantIdApplied,EnchantIdDefault,EnchantHeader,EnchantDescription,EnchantQualityId||"
+    Sv["LegitRow*!!!!!"] = "LinkName,TypeId,ArmorTypeId,WeaponTypeId,Trait,QualityId,SetId,EquipTypeId,Account,EnchantIdApplied,EnchantIdDefault,EnchantHeader,EnchantDescription,EnchantQualityId,StackCount"
 end
 
 local function OnInventorySingleSlotUpdate(_, bagId, slotId, _)
@@ -173,7 +174,7 @@ end
 local function Initialize()
     CharName = GetUnitName("player")
     AccountName = GetDisplayName()
-    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 13, nil, {})
+    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 19, nil, {})
     SetHeaderRow()
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
     --zo_callLater(function() ExportAll() end,20*1000)
