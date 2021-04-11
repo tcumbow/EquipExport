@@ -33,63 +33,22 @@ local function GetEnchantQuality(itemLink)
 	return 0
 end
 
-local function loopThruInventory(bagId)
-    -- logger:Debug("starting bag loop")
-    -- logger:Debug("SlotIndex,Property,Value")
-    local tmp = ""
-    local bagSize = GetBagSize(bagId)
-    for slotIndex = 0, bagSize - 1 do
-        local loc = ""
-        if bagId==BAG_WORN then loc=CharName.." - Equipped"
-        elseif bagId==BAG_BACKPACK then loc=CharName.." - Bag"
-        elseif bagId==BAG_BANK then loc=AccountName.." - Bank"
-        elseif bagId==BAG_SUBSCRIBER_BANK then loc=AccountName.." - Bank"
-        elseif 7<=bagId and bagId<=16 then loc=AccountName.." - Chest "..tostring(bagId-6)
-        else loc="Uncategorized"..bagId
-        end
-
-        if bagId==BAG_SUBSCRIBER_BANK then
-            tmp = "EquipExport,"..loc..",slot+"..slotIndex
-        else
-            tmp = "EquipExport,"..loc..",slot"..slotIndex
-        end
-
-        Sv[tmp..",LinkName"] = GetItemLinkName(GetItemLink(bagId,slotIndex))
-        Sv[tmp..",TypeId"] = GetItemType(bagId,slotIndex)
-        Sv[tmp..",ArmorTypeId"] = GetItemArmorType(bagId,slotIndex)
-        Sv[tmp..",WeaponTypeId"] = GetItemWeaponType(bagId,slotIndex)
-        Sv[tmp..",Trait"] = GetString("SI_ITEMTRAITTYPE",GetItemTrait(bagId,slotIndex))
-        Sv[tmp..",QualityId"] = GetItemQuality(bagId,slotIndex)
-        local isSet,setName,setId = LibSets.IsSetByItemLink(GetItemLink(bagId,slotIndex))
-        Sv[tmp..",SetId"] = setId
-        Sv[tmp..",EquipTypeId"] = GetItemLinkEquipType(GetItemLink(bagId,slotIndex))
-        Sv[tmp..",Account"] = AccountName
-        Sv[tmp..",EnchantIdApplied"] = GetItemLinkAppliedEnchantId(GetItemLink(bagId,slotIndex))
-        Sv[tmp..",EnchantIdDefault"] = GetItemLinkDefaultEnchantId(GetItemLink(bagId,slotIndex))
-        local hasCharges,enchantHeader,enchantDescription = GetItemLinkEnchantInfo(GetItemLink(bagId,slotIndex))
-        Sv[tmp..",EnchantHeader"] = enchantHeader
-        Sv[tmp..",EnchantDescription"] = enchantDescription
-        Sv[tmp..",EnchantQualityId"] = GetEnchantQuality(GetItemLink(bagId,slotIndex))
-
-    end
-end
-
 local function export()
-    loopThruInventory(BAG_WORN)
-    loopThruInventory(BAG_BACKPACK)
-    loopThruInventory(BAG_BANK)
-    loopThruInventory(BAG_SUBSCRIBER_BANK)
+    ExportWholeBag(BAG_WORN)
+    ExportWholeBag(BAG_BACKPACK)
+    ExportWholeBag(BAG_BANK)
+    ExportWholeBag(BAG_SUBSCRIBER_BANK)
     if IsOwnerOfCurrentHouse() then
-        loopThruInventory(BAG_HOUSE_BANK_ONE)
-        loopThruInventory(BAG_HOUSE_BANK_TWO)
-        loopThruInventory(BAG_HOUSE_BANK_THREE)
-        loopThruInventory(BAG_HOUSE_BANK_FOUR)
-        loopThruInventory(BAG_HOUSE_BANK_FIVE)
-        loopThruInventory(BAG_HOUSE_BANK_SIX)
-        loopThruInventory(BAG_HOUSE_BANK_SEVEN)
-        loopThruInventory(BAG_HOUSE_BANK_EIGHT)
-        loopThruInventory(BAG_HOUSE_BANK_NINE)
-        loopThruInventory(BAG_HOUSE_BANK_TEN)
+        ExportWholeBag(BAG_HOUSE_BANK_ONE)
+        ExportWholeBag(BAG_HOUSE_BANK_TWO)
+        ExportWholeBag(BAG_HOUSE_BANK_THREE)
+        ExportWholeBag(BAG_HOUSE_BANK_FOUR)
+        ExportWholeBag(BAG_HOUSE_BANK_FIVE)
+        ExportWholeBag(BAG_HOUSE_BANK_SIX)
+        ExportWholeBag(BAG_HOUSE_BANK_SEVEN)
+        ExportWholeBag(BAG_HOUSE_BANK_EIGHT)
+        ExportWholeBag(BAG_HOUSE_BANK_NINE)
+        ExportWholeBag(BAG_HOUSE_BANK_TEN)
     end
 end
 
@@ -169,6 +128,13 @@ end
 
 local function OnInventorySingleSlotUpdate(_, bagId, slotId, _)
     ExportSingleItem(bagId,slotId)
+end
+
+local function ExportWholeBag(bagId)
+    local bagSize = GetBagSize(bagId)
+    for slotIndex = 0, bagSize - 1 do
+        ExportSingleItem(bagId,slotIndex)
+    end
 end
 
 local function Initialize()
