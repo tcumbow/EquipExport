@@ -98,8 +98,48 @@ local function ExportAllDelay()
     zo_callLater(function() ExportAll() end,1*1000)
 end
 
+local function ExportSingleItem(bagId,slotId)
+    local tmp = ""
+    local loc = ""
+    if bagId==BAG_WORN then loc=GetUnitName("player").." - Equipped"
+    elseif bagId==BAG_BACKPACK then loc=GetUnitName("player").." - Bag"
+    elseif bagId==BAG_BANK then loc=GetDisplayName().." - Bank"
+    elseif bagId==BAG_SUBSCRIBER_BANK then loc=GetDisplayName().." - Bank"
+    elseif 7<=bagId and bagId<=16 then loc=GetDisplayName().." - Chest "..tostring(bagId-6)
+    else loc="Uncategorized"..bagId
+    end
+
+    if bagId==BAG_SUBSCRIBER_BANK then
+        tmp = "EquipExport,"..loc..",slot+"..slotId
+    else
+        tmp = "EquipExport,"..loc..",slot"..slotId
+    end
+
+    Sv[tmp..",LinkName"] = GetItemLinkName(GetItemLink(bagId,slotId))
+    Sv[tmp..",TypeId"] = GetItemType(bagId,slotId)
+    Sv[tmp..",ArmorTypeId"] = GetItemArmorType(bagId,slotId)
+    Sv[tmp..",WeaponTypeId"] = GetItemWeaponType(bagId,slotId)
+    Sv[tmp..",Trait"] = GetString("SI_ITEMTRAITTYPE",GetItemTrait(bagId,slotId))
+    Sv[tmp..",QualityId"] = GetItemQuality(bagId,slotId)
+    local isSet,setName,setId = LibSets.IsSetByItemLink(GetItemLink(bagId,slotId))
+    Sv[tmp..",SetId"] = setId
+    Sv[tmp..",EquipTypeId"] = GetItemLinkEquipType(GetItemLink(bagId,slotId))
+    Sv[tmp..",Account"] = GetDisplayName()
+    Sv[tmp..",EnchantIdApplied"] = GetItemLinkAppliedEnchantId(GetItemLink(bagId,slotId))
+    Sv[tmp..",EnchantIdDefault"] = GetItemLinkDefaultEnchantId(GetItemLink(bagId,slotId))
+    local hasCharges,enchantHeader,enchantDescription = GetItemLinkEnchantInfo(GetItemLink(bagId,slotId))
+    Sv[tmp..",EnchantHeader"] = enchantHeader
+    Sv[tmp..",EnchantDescription"] = enchantDescription
+    Sv[tmp..",EnchantQualityId"] = GetEnchantQuality(GetItemLink(bagId,slotId))
+end
+
+local function OnInventorySingleSlotUpdate(_, bagId, slotId, _)
+    ExportSingleItem(bagId,slotId)
+end
+
 local function Initialize()
     Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 9, nil, {})
+    EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
     --zo_callLater(function() ExportAll() end,20*1000)
     --EVENT_MANAGER:RegisterForUpdate(ADDON_NAME, 5*60*1000, function() ExportAll() end)
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_PLAYER_ACTIVATED, function() ExportAll() end)

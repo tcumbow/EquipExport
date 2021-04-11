@@ -50,7 +50,8 @@
 		"GetSelectedGuildBankId",
 		"SHARED_INVENTORY",
 		"d",
-		"EVENT_GUILD_BANK_ITEMS_READY"
+		"EVENT_GUILD_BANK_ITEMS_READY",
+		"EVENT_INVENTORY_SINGLE_SLOT_UPDATE"
 	],
 	"cSpell.words": [
 		"GUILDBANK",
