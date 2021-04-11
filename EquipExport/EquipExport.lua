@@ -1,15 +1,9 @@
-EquipExport = {}
-EquipExport.savedVars = {}
-EquipExport.globalSavedVars = {}
-
 local ADDON_NAME = "EquipExport"
-EquipExport.name = "EquipExport"
+local sV = {}
 
--- Libraries ------------------------------------------------------------------
+-- Begin local copies
 local LR = LibResearch
--- local logger = LibDebugLogger("EquipExport")
-local async = LibAsync
-local task = async:Create("AsyncTask")
+local task = LibAsync:Create("AsyncTask")
 
 local subIdToQuality = { }
 
@@ -34,9 +28,6 @@ local function GetEnchantQuality(itemLink)
 	end
 	return 0
 end
-
-
-
 
 local function loopThruInventory(bagId)
     -- logger:Debug("starting bag loop")
@@ -79,7 +70,6 @@ local function loopThruInventory(bagId)
     end
 end
 
-
 local function export()
     loopThruInventory(BAG_WORN)
     loopThruInventory(BAG_BACKPACK)
@@ -108,9 +98,7 @@ function EquipExport:ExportAllDelay()
 end
 
 function EquipExport:Initialize()
-    -- ...but we don't have anything to initialize yet. We'll come back to this.
-    -- logger:Debug("--------------initializing--------------")
-    self.sV = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 8, nil, {})
+    sV = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 9, nil, {})
     --zo_callLater(function() self:ExportAll() end,20*1000)
     --EVENT_MANAGER:RegisterForUpdate(self.name, 5*60*1000, function() self:ExportAll() end)
     EVENT_MANAGER:RegisterForEvent(self.name, EVENT_PLAYER_ACTIVATED, function() self:ExportAll() end)
@@ -118,8 +106,6 @@ function EquipExport:Initialize()
     EVENT_MANAGER:RegisterForEvent(self.name, EVENT_CLOSE_STORE, function() self:ExportAll() end)
     EVENT_MANAGER:RegisterForEvent(self.name, EVENT_LOGOUT_DEFERRED, function() self:ExportAll() end)
     EVENT_MANAGER:RegisterForEvent(self.name, EVENT_ACTIVITY_FINDER_ACTIVITY_COMPLETE, function() self:ExportAllDelay() end)
-    -- logger:Debug("done with initialization")
-    
 end
 
 
