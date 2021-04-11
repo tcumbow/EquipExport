@@ -1,5 +1,6 @@
 local ADDON_NAME = "EquipExport"
 local Sv = {}
+local CharName
 
 -- Begin local copies
 local LR = LibResearch
@@ -7,6 +8,7 @@ local Task = LibAsync:Create("AsyncTask")
 local Print = d
 
 local subIdToQuality = { }
+-- End local copies
 
 local function GetEnchantQuality(itemLink)
 	local itemId, itemIdSub, enchantSub = itemLink:match("|H[^:]+:item:([^:]+):([^:]+):[^:]+:[^:]+:([^:]+):")
@@ -37,8 +39,8 @@ local function loopThruInventory(bagId)
     local bagSize = GetBagSize(bagId)
     for slotIndex = 0, bagSize - 1 do
         local loc = ""
-        if bagId==BAG_WORN then loc=GetUnitName("player").." - Equipped"
-        elseif bagId==BAG_BACKPACK then loc=GetUnitName("player").." - Bag"
+        if bagId==BAG_WORN then loc=CharName.." - Equipped"
+        elseif bagId==BAG_BACKPACK then loc=CharName.." - Bag"
         elseif bagId==BAG_BANK then loc=GetDisplayName().." - Bank"
         elseif bagId==BAG_SUBSCRIBER_BANK then loc=GetDisplayName().." - Bank"
         elseif 7<=bagId and bagId<=16 then loc=GetDisplayName().." - Chest "..tostring(bagId-6)
@@ -101,8 +103,8 @@ end
 local function ExportSingleItem(bagId,slotId)
     local tmp = ""
     local loc = ""
-    if bagId==BAG_WORN then loc=GetUnitName("player").." - Equipped"
-    elseif bagId==BAG_BACKPACK then loc=GetUnitName("player").." - Bag"
+    if bagId==BAG_WORN then loc=CharName.." - Equipped"
+    elseif bagId==BAG_BACKPACK then loc=CharName.." - Bag"
     elseif bagId==BAG_BANK then loc=GetDisplayName().." - Bank"
     elseif bagId==BAG_SUBSCRIBER_BANK then loc=GetDisplayName().." - Bank"
     elseif 7<=bagId and bagId<=16 then loc=GetDisplayName().." - Chest "..tostring(bagId-6)
@@ -138,7 +140,8 @@ local function OnInventorySingleSlotUpdate(_, bagId, slotId, _)
 end
 
 local function Initialize()
-    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 9, nil, {})
+    CharName = GetUnitName("player")
+    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 10, nil, {})
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
     --zo_callLater(function() ExportAll() end,20*1000)
     --EVENT_MANAGER:RegisterForUpdate(ADDON_NAME, 5*60*1000, function() ExportAll() end)
