@@ -2,13 +2,13 @@ local ADDON_NAME = "EquipExport"
 local Sv = {}
 local CharName
 local AccountName
+local subIdToQuality = { }
 
 -- Begin local copies
 local LR = LibResearch
 local Task = LibAsync:Create("AsyncTask")
 local Print = d
 
-local subIdToQuality = { }
 -- End local copies
 
 local function GetEnchantQuality(itemLink)
