@@ -1,6 +1,7 @@
 local ADDON_NAME = "EquipExport"
 local Sv = {}
 local CharName
+local AccountName
 
 -- Begin local copies
 local LR = LibResearch
@@ -41,9 +42,9 @@ local function loopThruInventory(bagId)
         local loc = ""
         if bagId==BAG_WORN then loc=CharName.." - Equipped"
         elseif bagId==BAG_BACKPACK then loc=CharName.." - Bag"
-        elseif bagId==BAG_BANK then loc=GetDisplayName().." - Bank"
-        elseif bagId==BAG_SUBSCRIBER_BANK then loc=GetDisplayName().." - Bank"
-        elseif 7<=bagId and bagId<=16 then loc=GetDisplayName().." - Chest "..tostring(bagId-6)
+        elseif bagId==BAG_BANK then loc=AccountName.." - Bank"
+        elseif bagId==BAG_SUBSCRIBER_BANK then loc=AccountName.." - Bank"
+        elseif 7<=bagId and bagId<=16 then loc=AccountName.." - Chest "..tostring(bagId-6)
         else loc="Uncategorized"..bagId
         end
 
@@ -62,7 +63,7 @@ local function loopThruInventory(bagId)
         local isSet,setName,setId = LibSets.IsSetByItemLink(GetItemLink(bagId,slotIndex))
         Sv[tmp..",SetId"] = setId
         Sv[tmp..",EquipTypeId"] = GetItemLinkEquipType(GetItemLink(bagId,slotIndex))
-        Sv[tmp..",Account"] = GetDisplayName()
+        Sv[tmp..",Account"] = AccountName
         Sv[tmp..",EnchantIdApplied"] = GetItemLinkAppliedEnchantId(GetItemLink(bagId,slotIndex))
         Sv[tmp..",EnchantIdDefault"] = GetItemLinkDefaultEnchantId(GetItemLink(bagId,slotIndex))
         local hasCharges,enchantHeader,enchantDescription = GetItemLinkEnchantInfo(GetItemLink(bagId,slotIndex))
@@ -105,9 +106,9 @@ local function ExportSingleItem(bagId,slotId)
     local loc = ""
     if bagId==BAG_WORN then loc=CharName.." - Equipped"
     elseif bagId==BAG_BACKPACK then loc=CharName.." - Bag"
-    elseif bagId==BAG_BANK then loc=GetDisplayName().." - Bank"
-    elseif bagId==BAG_SUBSCRIBER_BANK then loc=GetDisplayName().." - Bank"
-    elseif 7<=bagId and bagId<=16 then loc=GetDisplayName().." - Chest "..tostring(bagId-6)
+    elseif bagId==BAG_BANK then loc=AccountName.." - Bank"
+    elseif bagId==BAG_SUBSCRIBER_BANK then loc=AccountName.." - Bank"
+    elseif 7<=bagId and bagId<=16 then loc=AccountName.." - Chest "..tostring(bagId-6)
     else loc="Uncategorized"..bagId
     end
 
@@ -126,7 +127,7 @@ local function ExportSingleItem(bagId,slotId)
     local isSet,setName,setId = LibSets.IsSetByItemLink(GetItemLink(bagId,slotId))
     Sv[tmp..",SetId"] = setId
     Sv[tmp..",EquipTypeId"] = GetItemLinkEquipType(GetItemLink(bagId,slotId))
-    Sv[tmp..",Account"] = GetDisplayName()
+    Sv[tmp..",Account"] = AccountName
     Sv[tmp..",EnchantIdApplied"] = GetItemLinkAppliedEnchantId(GetItemLink(bagId,slotId))
     Sv[tmp..",EnchantIdDefault"] = GetItemLinkDefaultEnchantId(GetItemLink(bagId,slotId))
     local hasCharges,enchantHeader,enchantDescription = GetItemLinkEnchantInfo(GetItemLink(bagId,slotId))
@@ -141,6 +142,7 @@ end
 
 local function Initialize()
     CharName = GetUnitName("player")
+    AccountName = GetDisplayName()
     Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 10, nil, {})
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
     --zo_callLater(function() ExportAll() end,20*1000)
