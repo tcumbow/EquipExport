@@ -1,5 +1,5 @@
 local ADDON_NAME = "EquipExport"
-local SvFormatVersion = 23
+local SvFormatVersion = 24
 local SvFormatVersionText = tostring(SvFormatVersion)
 local Sv = {}
 local CharName
@@ -57,7 +57,17 @@ local function BuildLocString(bagId,slotId) --pure function except CharName and 
 end
 
 local function TransformBagId(bagId)
-    return BuildLocString(bagId,0)
+    local loc = ""
+    if bagId==BAG_WORN then loc=CharName.." - Equipped"
+    elseif bagId==BAG_BACKPACK then loc=CharName.." - Bag"
+    elseif bagId==BAG_BANK then loc=AccountName.." - Bank"
+    elseif bagId==BAG_SUBSCRIBER_BANK then loc=AccountName.." - Bank"
+    elseif bagId==5 then loc=AccountName.." - Craft Bag"
+    elseif 7<=bagId and bagId<=16 then loc=AccountName.." - Chest "..tostring(bagId-6)
+    else loc="Uncategorized"..bagId
+    end
+
+    return loc
 end
 
 local function ExportSingleItem(bagId,slotId)
