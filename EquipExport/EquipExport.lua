@@ -54,6 +54,10 @@ local function BuildLocString(bagId,slotId) --pure function except CharName and 
     return tmp
 end
 
+local function TransformBagId(bagId)
+    return BuildLocString(bagId,0)
+end
+
 local function ExportSingleItem(bagId,slotId)
     local dataString = ""
     local key = BuildLocString(bagId,slotId)
@@ -108,7 +112,7 @@ local function ExportWholeBag(bagId)
     for slotIndex = 0, bagSize - 1 do
         ExportSingleItem(bagId,slotIndex)
     end
-    Sv.BagInitialized[bagId] = true
+    Sv.BagInitialized[TransformBagId(bagId)] = true
     Print("EquipExport ran on BagId: "..tostring(bagId))
 end
 
@@ -136,19 +140,19 @@ end
 local function Initialize()
     CharName = GetUnitName("player")
     AccountName = GetDisplayName()
-    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 20, nil, {})
+    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 21, nil, {})
     SetHeaderRow()
     Sv.BagInitialized = Sv.BagInitialized or {}
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
 
-    if not Sv.BagInitialized[BAG_WORN] then
+    if not Sv.BagInitialized[TransformBagId(BAG_WORN)] then
         zo_callLater(function() ExportWholeBag(BAG_WORN) end,20*1000)
         zo_callLater(function() ExportWholeBag(BAG_BACKPACK) end,22*1000)
         zo_callLater(function() ExportWholeBag(BAG_BANK) end,24*1000)
         zo_callLater(function() ExportWholeBag(BAG_SUBSCRIBER_BANK) end,26*1000)
     end
 
-    if not Sv.BagInitialized[BAG_HOUSE_BANK_ONE] then
+    if not Sv.BagInitialized[TransformBagId(BAG_HOUSE_BANK_ONE)] then
         EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_CLOSE_BANK, OnEventCloseBank)
     end
 
