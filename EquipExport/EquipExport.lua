@@ -1,6 +1,6 @@
 local ADDON_NAME = "EquipExport"
-local SvFormatVersion = 24
-local SvFormatVersionText = tostring(SvFormatVersion)
+local SvSchemaVersion = 26
+local SvSchemaVersionText = tostring(SvSchemaVersion)
 local Sv = {}
 local CharName
 local AccountName
@@ -48,9 +48,9 @@ local function BuildLocString(bagId,slotId) --pure function except CharName and 
     end
 
     if bagId==BAG_SUBSCRIBER_BANK then
-        tmp = "LegitRowV"..SvFormatVersionText..loc..",slot+"..slotId
+        tmp = "LegitRow"..SvSchemaVersionText.."*"..loc..",slot+"..slotId
     else
-        tmp = "LegitRowV"..SvFormatVersionText..loc..",slot"..slotId
+        tmp = "LegitRow"..SvSchemaVersionText.."*"..loc..",slot"..slotId
     end
 
     return tmp
@@ -112,7 +112,7 @@ local function ExportSingleItem(bagId,slotId)
 end
 
 local function SetHeaderRow()
-    Sv["LegitRow*!!!!!"] = "LinkName;TypeId;ArmorTypeId;WeaponTypeId;Trait;QualityId;SetId;EquipTypeId;Account;EnchantIdApplied;EnchantIdDefault;EnchantHeader;EnchantDescription;EnchantQualityId;StackCount"
+    Sv["LegitRow"..SvSchemaVersionText.."*!!!!!"] = "LinkName;TypeId;ArmorTypeId;WeaponTypeId;Trait;QualityId;SetId;EquipTypeId;Account;EnchantIdApplied;EnchantIdDefault;EnchantHeader;EnchantDescription;EnchantQualityId;StackCount"
 end
 
 local function OnInventorySingleSlotUpdate(_, bagId, slotId, _)
@@ -152,7 +152,7 @@ end
 local function Initialize()
     CharName = GetUnitName("player")
     AccountName = GetDisplayName()
-    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", SvFormatVersion, nil, {})
+    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", SvSchemaVersion, nil, {})
     SetHeaderRow()
     Sv.BagInitialized = Sv.BagInitialized or {}
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
