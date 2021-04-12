@@ -1,4 +1,6 @@
 local ADDON_NAME = "EquipExport"
+local SvFormatVersion = 23
+local SvFormatVersionText = tostring(SvFormatVersion)
 local Sv = {}
 local CharName
 local AccountName
@@ -46,9 +48,9 @@ local function BuildLocString(bagId,slotId) --pure function except CharName and 
     end
 
     if bagId==BAG_SUBSCRIBER_BANK then
-        tmp = "LegitRow*"..loc..",slot+"..slotId
+        tmp = "LegitRowV"..SvFormatVersionText..loc..",slot+"..slotId
     else
-        tmp = "LegitRow*"..loc..",slot"..slotId
+        tmp = "LegitRowV"..SvFormatVersionText..loc..",slot"..slotId
     end
 
     return tmp
@@ -140,7 +142,7 @@ end
 local function Initialize()
     CharName = GetUnitName("player")
     AccountName = GetDisplayName()
-    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", 22, nil, {})
+    Sv = ZO_SavedVars:NewAccountWide("EquipExportSavedVariables", SvFormatVersion, nil, {})
     SetHeaderRow()
     Sv.BagInitialized = Sv.BagInitialized or {}
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
