@@ -1,5 +1,5 @@
 local ADDON_NAME = "EquipExport"
-local SvSchemaVersion = 26
+local SvSchemaVersion = 28
 local SvSchemaVersionText = tostring(SvSchemaVersion)
 local Sv = {}
 local CharName
