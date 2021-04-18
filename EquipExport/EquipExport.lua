@@ -121,7 +121,6 @@ local function ExportWholeBag(bagId)
         ExportSingleItem(bagId,slotIndex)
     end
     Sv.BagInitialized[TransformBagId(bagId)] = true
-    Print("EquipExport ran on BagId: "..tostring(bagId))
 end
 
 local function OnBagUpdateTimer(bagId)
