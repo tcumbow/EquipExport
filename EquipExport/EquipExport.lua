@@ -164,7 +164,7 @@ local function Initialize()
     Sv.BagInitialized = Sv.BagInitialized or {}
     EVENT_MANAGER:RegisterForEvent(ADDON_NAME, EVENT_INVENTORY_SINGLE_SLOT_UPDATE, OnInventorySingleSlotUpdate)
 
-    if not Sv.BagInitialized[TransformBagId(BAG_WORN)] then
+    if not Sv.BagInitialized[TransformBagId(BAG_SUBSCRIBER_BANK)] then
         zo_callLater(function() ExportWholeBag(BAG_WORN) end,20*1000)
         zo_callLater(function() ExportWholeBag(BAG_BACKPACK) end,22*1000)
         zo_callLater(function() ExportWholeBag(BAG_BANK) end,24*1000)
