@@ -124,8 +124,15 @@ local function ExportWholeBag(bagId)
     Print("EquipExport ran on BagId: "..tostring(bagId))
 end
 
-local function ExportWholeBagAsync(bagId)
+local function OnBagUpdateTimer(bagId)
+    EVENT_MANAGER:UnregisterForUpdate(ADDON_NAME..tostring(bagId))
     Task:Call(ExportWholeBag(bagId))
+end
+
+local function ExportWholeBagAsync(bagId)
+    local rndDelay = math.random(5000)
+    EVENT_MANAGER:UnregisterForUpdate(ADDON_NAME..tostring(bagId))
+    EVENT_MANAGER:RegisterForUpdate(ADDON_NAME..tostring(bagId),10000+rndDelay,function () OnBagUpdateTimer(bagId) end)
 end
 
 local function OnInventorySingleSlotUpdate(_, bagId, slotId, _)
