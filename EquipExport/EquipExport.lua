@@ -115,10 +115,6 @@ local function SetHeaderRow()
     Sv["LegitRow"..SvSchemaVersionText.."*!!!!!"] = "LinkName;TypeId;ArmorTypeId;WeaponTypeId;Trait;QualityId;SetId;EquipTypeId;Account;EnchantIdApplied;EnchantIdDefault;EnchantHeader;EnchantDescription;EnchantQualityId;StackCount"
 end
 
-local function OnInventorySingleSlotUpdate(_, bagId, slotId, _)
-    ExportSingleItem(bagId,slotId)
-end
-
 local function ExportWholeBag(bagId)
     local bagSize = GetBagSize(bagId)
     for slotIndex = 0, bagSize - 1 do
@@ -130,6 +126,10 @@ end
 
 local function ExportWholeBagAsync(bagId)
     Task:Call(ExportWholeBag(bagId))
+end
+
+local function OnInventorySingleSlotUpdate(_, bagId, slotId, _)
+    ExportWholeBagAsync(bagId)
 end
 
 local function OnEventCloseBank()
